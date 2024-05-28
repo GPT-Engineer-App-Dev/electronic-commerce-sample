@@ -1,4 +1,4 @@
-import { Box, Container, Flex, Heading, HStack, Image, Link, SimpleGrid, Text, VStack, Input } from "@chakra-ui/react";
+import { Box, Container, Flex, Heading, HStack, Image, Link, SimpleGrid, Text, VStack, Input, Button } from "@chakra-ui/react";
 import { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 
@@ -28,10 +28,17 @@ const products = [
 
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
 
-  const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const handleCategoryChange = (category) => {
+    setSelectedCategory(category);
+  };
+
+  const filteredProducts = products.filter((product) => {
+    const matchesCategory = selectedCategory ? product.category === selectedCategory : true;
+    const matchesSearchTerm = product.name.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesCategory && matchesSearchTerm;
+  });
   return (
     <Container maxW="container.xl" p={4}>
       <Flex as="nav" bg="gray.800" color="white" p={4} justifyContent="space-between" alignItems="center">
@@ -55,6 +62,15 @@ const Index = () => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
+      </Box>
+
+      <Box mt={4} mb={8}>
+        <HStack spacing={4}>
+          <Button onClick={() => handleCategoryChange("")} colorScheme={selectedCategory === "" ? "blue" : "gray"}>All</Button>
+          <Button onClick={() => handleCategoryChange("Smartphones")} colorScheme={selectedCategory === "Smartphones" ? "blue" : "gray"}>Smartphones</Button>
+          <Button onClick={() => handleCategoryChange("Laptops")} colorScheme={selectedCategory === "Laptops" ? "blue" : "gray"}>Laptops</Button>
+          <Button onClick={() => handleCategoryChange("Headphones")} colorScheme={selectedCategory === "Headphones" ? "blue" : "gray"}>Headphones</Button>
+        </HStack>
       </Box>
 
       <Heading size="lg" mt={12} mb={6}>Featured Products</Heading>
